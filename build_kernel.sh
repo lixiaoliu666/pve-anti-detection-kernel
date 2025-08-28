@@ -13,4 +13,5 @@ git submodule update --init --recursive
 cd submodules/zfsonlinux/
 sudo mk-build-deps --install
 cd ../..
+sed -i 's/kvm_queue_exception_p(vcpu, DB_VECTOR, DR6_BS);/if (KVM_GUESTDBG_SINGLESTEP ) {\n\t\tprintk(KERN_ALERT "kvm_vcpu_do_singlestep if (KVM_GUESTDBG_SINGLESTEP)  lixiaoliu666 return 0\\n"); \n\t\tkvm_run->debug.arch.dr6 = DR6_BS | DR6_ACTIVE_LOW | 1;\n\t\tkvm_run->debug.arch.pc = kvm_get_linear_rip(vcpu);\n\t\tkvm_run->debug.arch.exception = DB_VECTOR;\n\t\tkvm_run->exit_reason = KVM_EXIT_DEBUG;\n\t\treturn 0;\n\t}\n\tkvm_queue_exception_p(vcpu, DB_VECTOR, DR6_BS);/g' submodules/ubuntu-kernel/arch/x86/kvm/x86.c # Checking hypervisor interception...
 make
