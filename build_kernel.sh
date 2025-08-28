@@ -19,5 +19,5 @@ cd submodules/ubuntu-kernel/
 git diff > qemu-autoGenPatch.patch
 cp qemu-autoGenPatch.patch ../..
 cd ../..
-make build-dir-fresh
+#make build-dir-fresh
 make
