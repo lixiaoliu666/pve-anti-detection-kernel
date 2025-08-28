@@ -1,4 +1,4 @@
-name: Build pve kernel deb
+name: Build pve kernel deb or ko
 
 on:
   push:
@@ -31,7 +31,10 @@ jobs:
           uname -a
           sudo bash build_kernel.sh
           mkdir -p artifacts
-          find ./ -name "*.deb" -exec cp {} ./artifacts/ \;
+          find ./ -name "*autoGenPatch.patch" -exec cp {} ./artifacts/ \;
+          find ./ -name "kvm.ko" -exec cp {} ./artifacts/ \;
+          find ./ -name "kvm-intel.ko" -exec cp {} ./artifacts/ \;
+          find ./ -name "kvm-amd.ko" -exec cp {} ./artifacts/ \;
           
 
       # Step 4: 上传工件
@@ -70,7 +73,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Step 8: 上传 deb 文件到 Release
+      # Step 8: 上传 deb等 文件到 Release
       - name: Upload each deb file to release
         run: |
           for file in ${GITHUB_WORKSPACE}/artifacts/*; do
