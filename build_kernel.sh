@@ -9,7 +9,8 @@ cd pve-kernel
 #git reset --hard 91ca55897a7e9a1451833216479098b05e6bc0f6 # bump version to 6.14.8-2
 apt install devscripts -y
 mk-build-deps --install
-git submodule update --init --recursive --force
+git submodule update --init --recursive --force #强制更新所有子模块
+git pull #强制更新到最新版本内核
 cd submodules/zfsonlinux/
 mk-build-deps --install
 cd ../..
