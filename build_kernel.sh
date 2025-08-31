@@ -18,6 +18,7 @@ sed -i 's/kvm_queue_exception_p(vcpu, DB_VECTOR, DR6_BS);/if (KVM_GUESTDBG_SINGL
 sed -i 's/kvm_init_xstate_sizes/printk(KERN_ALERT "kvm.ko lixiaoliu666 and dds666 v2.0 Start,ok!!!\\n");\n\tkvm_init_xstate_sizes/g' submodules/ubuntu-kernel/arch/x86/kvm/x86.c # start lixiaoliu666 flag
 sed -i 's/(CPU_BASED_RDTSC_EXITING/\/\/(CPU_BASED_RDTSC_EXITING/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
 sed -i 's/CPU_BASED_TPR_SHADOW/(CPU_BASED_TPR_SHADOW/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
+sed -i 's/CPU_BASED_INTR_WINDOW_EXITING/CPU_BASED_RDTSC_EXITING |					\\ \n\tCPU_BASED_INTR_WINDOW_EXITING/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
 
 cd submodules/ubuntu-kernel/
 git diff > qemu-autoGenPatch.patch
