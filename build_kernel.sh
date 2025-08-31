@@ -19,7 +19,7 @@ sed -i 's/kvm_init_xstate_sizes/printk(KERN_ALERT "kvm.ko lixiaoliu666 and dds66
 
 sed -i '/CPU_BASED_RDTSC_EXITING/d' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
 sed -i 's/CPU_BASED_TPR_SHADOW/(CPU_BASED_TPR_SHADOW/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
-sed -i 's/CPU_BASED_INTR_WINDOW_EXITING/CPU_BASED_RDTSC_EXITING |					\\ \n\tCPU_BASED_INTR_WINDOW_EXITING/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
+sed -i 's/CPU_BASED_INTR_WINDOW_EXITING/CPU_BASED_RDTSC_EXITING |					\\\n\t CPU_BASED_INTR_WINDOW_EXITING/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.h
 
 sed -i 's/static int vmx_setup_l1d_flush/static __always_inline u64 mul_u64_u64_shr0(u64 a, u64 mul, unsigned int shift){	return (u64)(((unsigned __int128)a \* mul) >> shift); }\nstatic inline u64 __scale_tsc0(u64 ratio, u64 tsc){	return mul_u64_u64_shr0(tsc, ratio, kvm_caps.tsc_scaling_ratio_frac_bits); }\nstatic inline u64 kvm_scale_tsc0(u64 tsc, u64 ratio){\n\tu64 _tsc = tsc;\n\tif (ratio != kvm_caps.default_tsc_scaling_ratio){_tsc = __scale_tsc0(ratio, tsc);}\n\treturn _tsc;\n}\nstatic int vmx_setup_l1d_flush/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 sed -i 's/exec_control \&= ~(CPU_BASED_RDTSC_EXITING |/exec_control \&= ~(/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
