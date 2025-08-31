@@ -23,7 +23,9 @@ sed -i 's/CPU_BASED_INTR_WINDOW_EXITING/CPU_BASED_RDTSC_EXITING |					\\ \n\tCPU
 
 sed -i 's/static int vmx_setup_l1d_flush/static __always_inline u64 mul_u64_u64_shr0(u64 a, u64 mul, unsigned int shift){	return (u64)(((unsigned __int128)a \* mul) >> shift); }\nstatic inline u64 __scale_tsc0(u64 ratio, u64 tsc){	return mul_u64_u64_shr0(tsc, ratio, kvm_caps.tsc_scaling_ratio_frac_bits); }\nstatic inline u64 kvm_scale_tsc0(u64 tsc, u64 ratio){\n\tu64 _tsc = tsc;\n\tif (ratio != kvm_caps.default_tsc_scaling_ratio){_tsc = __scale_tsc0(ratio, tsc);}\n\treturn _tsc;\n}\nstatic int vmx_setup_l1d_flush/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 sed -i 's/exec_control \&= ~(CPU_BASED_RDTSC_EXITING |/exec_control \&= ~(/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
+sed -i 's/\/\* INTR_WINDOW_EXITING/exec_control |= CPU_BASED_RDTSC_EXITING; \/\/Ensure handle_rdtsc() is used.added line lixiaoliu666 and dds666\n\t\/\* INTR_WINDOW_EXITING/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 
+sed -i 's/int r, cpu;/int r, cpu;\n\tprintk(KERN_ALERT "kvm-intel.ko lixiaoliu666 and dds666 v2.0 Start,ok!!!\\n");\/\/added line lixiaoliu666 and dds666/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 
 
 sed -i 's/svm_set_intercept(svm, INTERCEPT_RSM);/svm_set_intercept(svm, INTERCEPT_RSM);\n\tsvm_set_intercept(svm, INTERCEPT_RDTSC); \/\/added line lixiaoliu666 and dds666/g' submodules/ubuntu-kernel/arch/x86/kvm/svm/svm.c
