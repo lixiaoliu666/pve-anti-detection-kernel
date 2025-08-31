@@ -25,6 +25,7 @@ sed -i 's/static int vmx_setup_l1d_flush/static __always_inline u64 mul_u64_u64_
 sed -i 's/exec_control \&= ~(CPU_BASED_RDTSC_EXITING |/exec_control \&= ~(/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 sed -i 's/\/\* INTR_WINDOW_EXITING/exec_control |= CPU_BASED_RDTSC_EXITING; \/\/Ensure handle_rdtsc() is used.added line lixiaoliu666 and dds666\n\t\/\* INTR_WINDOW_EXITING/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 
+sed -i 's/handle_notify,/handle_notify,\n\t[EXIT_REASON_RDTSC]                   = handle_rdtsc, \/\/added line lixiaoliu666 and dds666\n\t[EXIT_REASON_RDTSCP]                  = handle_rdtscp, \/\/added line lixiaoliu666 and dds666/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 sed -i 's/int r, cpu;/int r, cpu;\n\tprintk(KERN_ALERT "kvm-intel.ko lixiaoliu666 and dds666 v2.0 Start,ok!!!\\n");\/\/added line lixiaoliu666 and dds666/g' submodules/ubuntu-kernel/arch/x86/kvm/vmx/vmx.c
 
 
