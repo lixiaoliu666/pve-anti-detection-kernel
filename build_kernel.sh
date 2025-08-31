@@ -15,7 +15,7 @@ cd submodules/zfsonlinux/
 mk-build-deps --install
 cd ../..
 sed -i 's/kvm_queue_exception_p(vcpu, DB_VECTOR, DR6_BS);/if (KVM_GUESTDBG_SINGLESTEP ) {\n\t\tprintk(KERN_ALERT "kvm_vcpu_do_singlestep if (KVM_GUESTDBG_SINGLESTEP)  lixiaoliu666 return 0\\n"); \n\t\tkvm_run->debug.arch.dr6 = DR6_BS | DR6_ACTIVE_LOW | 1;\n\t\tkvm_run->debug.arch.pc = kvm_get_linear_rip(vcpu);\n\t\tkvm_run->debug.arch.exception = DB_VECTOR;\n\t\tkvm_run->exit_reason = KVM_EXIT_DEBUG;\n\t\treturn 0;\n\t}\n\tkvm_queue_exception_p(vcpu, DB_VECTOR, DR6_BS);/g' submodules/ubuntu-kernel/arch/x86/kvm/x86.c # Checking hypervisor interception...
-sed -i 's/kvm_init_xstate_sizes/printk(KERN_ALERT "kvm.so lixiaoliu666 and dds666 v2.0 Start,ok!!!\\n");\n\tkvm_init_xstate_sizes/g' submodules/ubuntu-kernel/arch/x86/kvm/x86.c # start lixiaoliu666 flag
+sed -i 's/kvm_init_xstate_sizes/printk(KERN_ALERT "kvm.ko lixiaoliu666 and dds666 v2.0 Start,ok!!!\\n");\n\tkvm_init_xstate_sizes/g' submodules/ubuntu-kernel/arch/x86/kvm/x86.c # start lixiaoliu666 flag
 cd submodules/ubuntu-kernel/
 git diff > qemu-autoGenPatch.patch
 cp qemu-autoGenPatch.patch ../..
