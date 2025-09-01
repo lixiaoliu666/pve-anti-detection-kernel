@@ -1,5 +1,5 @@
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 282c91c6aa33..1242ee82f66d 100644
+index 282c91c6aa33..99eaf8c50117 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
 @@ -1291,6 +1291,7 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
@@ -10,12 +10,11 @@ index 282c91c6aa33..1242ee82f66d 100644
  
  	if (!kvm_mwait_in_guest(vcpu->kvm)) {
  		svm_set_intercept(svm, INTERCEPT_MONITOR);
-@@ -3299,7 +3300,31 @@ static int invpcid_interception(struct kvm_vcpu *vcpu)
- 
+@@ -3300,6 +3301,29 @@ static int invpcid_interception(struct kvm_vcpu *vcpu)
  	return kvm_handle_invpcid(vcpu, type, gva);
  }
--
-+static u32 print_once = 1; 
+ 
++static u32 print_once = 1;
 +static int handle_rdtsc_interception(struct kvm_vcpu *vcpu){
 +	static u64 rdtsc_fake = 0;
 +	static u64 rdtsc_prev = 0;
@@ -32,18 +31,16 @@ index 282c91c6aa33..1242ee82f66d 100644
 +			rdtsc_fake += fake_diff;
 +		}
 +	}
-+	if(rdtsc_fake > rdtsc_real){
-+		rdtsc_fake = rdtsc_real;
-+	}
++	if(rdtsc_fake > rdtsc_real){rdtsc_fake = rdtsc_real;}
 +	rdtsc_prev = rdtsc_real;
 +	vcpu->arch.regs[VCPU_REGS_RAX] = rdtsc_fake & -1u;
-+    	vcpu->arch.regs[VCPU_REGS_RDX] = (rdtsc_fake >> 32) & -1u;
-+    	return svm_skip_emulated_instruction(vcpu);
++	vcpu->arch.regs[VCPU_REGS_RDX] = (rdtsc_fake >> 32) & -1u;
++	return svm_skip_emulated_instruction(vcpu);
 +}
  static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
  	[SVM_EXIT_READ_CR0]			= cr_interception,
  	[SVM_EXIT_READ_CR3]			= cr_interception,
-@@ -3371,9 +3396,11 @@ static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
+@@ -3371,6 +3395,7 @@ static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
  	[SVM_EXIT_RSM]                          = rsm_interception,
  	[SVM_EXIT_AVIC_INCOMPLETE_IPI]		= avic_incomplete_ipi_interception,
  	[SVM_EXIT_AVIC_UNACCELERATED_ACCESS]	= avic_unaccelerated_access_interception,
@@ -51,29 +48,22 @@ index 282c91c6aa33..1242ee82f66d 100644
  #ifdef CONFIG_KVM_AMD_SEV
  	[SVM_EXIT_VMGEXIT]			= sev_handle_vmgexit,
  #endif
-+	
- };
- 
- static void dump_vmcb(struct kvm_vcpu *vcpu)
-@@ -5499,7 +5526,8 @@ static void __svm_exit(void)
- static int __init svm_init(void)
+@@ -5500,6 +5525,7 @@ static int __init svm_init(void)
  {
  	int r;
--
-+	
+ 
 +	printk(KERN_ALERT "kvm-amd.ko lixiaoliu666 and dds666 v2.0 Start,ok!!!\n");//added line lixiaoliu666 and dds666
  	__unused_size_checks();
  
  	if (!kvm_is_svm_supported())
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 3b92f893b239..6399d70812f8 100644
+index 3b92f893b239..092ecac438dc 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -246,7 +246,13 @@ static const struct {
- 
+@@ -247,6 +247,13 @@ static const struct {
  #define L1D_CACHE_ORDER 4
  static void *vmx_l1d_flush_pages;
--
+ 
 +static __always_inline u64 mul_u64_u64_shr0(u64 a, u64 mul, unsigned int shift){	return (u64)(((unsigned __int128)a * mul) >> shift); }
 +static inline u64 __scale_tsc0(u64 ratio, u64 tsc){	return mul_u64_u64_shr0(tsc, ratio, kvm_caps.tsc_scaling_ratio_frac_bits); }
 +static inline u64 kvm_scale_tsc0(u64 tsc, u64 ratio){
@@ -84,7 +74,7 @@ index 3b92f893b239..6399d70812f8 100644
  static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
  {
  	struct page *page;
-@@ -4492,11 +4498,12 @@ static u32 vmx_exec_control(struct vcpu_vmx *vmx)
+@@ -4492,11 +4499,12 @@ static u32 vmx_exec_control(struct vcpu_vmx *vmx)
  	 * Not used by KVM, but fully supported for nesting, i.e. are allowed in
  	 * vmcs12 and propagated to vmcs02 when set in vmcs12.
  	 */
@@ -93,17 +83,15 @@ index 3b92f893b239..6399d70812f8 100644
  			  CPU_BASED_USE_IO_BITMAPS |
  			  CPU_BASED_MONITOR_TRAP_FLAG |
  			  CPU_BASED_PAUSE_EXITING);
--
-+	// Ensure handle_rdtsc() is used. added line lixiaoliu666 and dds666
-+	exec_control |= CPU_BASED_RDTSC_EXITING; //added line lixiaoliu666 and dds666
+ 
++	exec_control |= CPU_BASED_RDTSC_EXITING; //Ensure handle_rdtsc() is used.added line lixiaoliu666 and dds666
  	/* INTR_WINDOW_EXITING and NMI_WINDOW_EXITING are toggled dynamically */
  	exec_control &= ~(CPU_BASED_INTR_WINDOW_EXITING |
  			  CPU_BASED_NMI_WINDOW_EXITING);
-@@ -6086,7 +6093,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
- 	to_vmx(vcpu)->exit_reason.bus_lock_detected = true;
+@@ -6087,6 +6095,33 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
  	return 1;
  }
--
+ 
 +static u32 print_once_rdtsc = 1;
 +static int handle_rdtsc(struct kvm_vcpu *vcpu) {
 +	u64 offset = vcpu->arch.tsc_offset;
@@ -113,8 +101,7 @@ index 3b92f893b239..6399d70812f8 100644
 +		printk(KERN_ALERT "[handle_rdtsc] vmx.c fake rdtsc vmx function is working lixiaoliu666 and dds666\n");
 +		print_once_rdtsc = 0;
 +	}
-+	if (vmx_get_cpl(vcpu) != 0 || !is_protmode(vcpu))
-+		ratio /= 4;
++	if (vmx_get_cpl(vcpu) != 0 || !is_protmode(vcpu)){ratio /= 4;}
 +	rdtsc_fake = kvm_scale_tsc0(rdtsc(), ratio) + offset;
 +	vcpu->arch.regs[VCPU_REGS_RAX] = rdtsc_fake & -1u;
 +	vcpu->arch.regs[VCPU_REGS_RDX] = (rdtsc_fake >> 32) & -1u;
@@ -129,28 +116,33 @@ index 3b92f893b239..6399d70812f8 100644
 +	vcpu->arch.regs[VCPU_REGS_RCX] = vmcs_read16(VIRTUAL_PROCESSOR_ID);
 +	return handle_rdtsc(vcpu);
 +}
++
++static int handle_umwait(struct kvm_vcpu *vcpu){return skip_emulated_instruction(vcpu);}
++static int handle_tpause(struct kvm_vcpu *vcpu){return skip_emulated_instruction(vcpu);}
  static int handle_notify(struct kvm_vcpu *vcpu)
  {
  	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
-@@ -6171,6 +6202,8 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
+@@ -6171,6 +6206,10 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
  	[EXIT_REASON_ENCLS]		      = handle_encls,
  	[EXIT_REASON_BUS_LOCK]                = handle_bus_lock_vmexit,
  	[EXIT_REASON_NOTIFY]		      = handle_notify,
 +	[EXIT_REASON_RDTSC]                   = handle_rdtsc, //added line lixiaoliu666 and dds666
 +	[EXIT_REASON_RDTSCP]                  = handle_rdtscp, //added line lixiaoliu666 and dds666
++	[EXIT_REASON_UMWAIT]                  = handle_umwait, //added line lixiaoliu666 and dds666
++	[EXIT_REASON_TPAUSE]		      = handle_tpause, //added line lixiaoliu666 and dds666
  };
  
  static const int kvm_vmx_max_exit_handlers =
-@@ -8614,6 +8647,7 @@ static int __init vmx_init(void)
+@@ -8613,6 +8652,7 @@ module_exit(vmx_exit);
+ static int __init vmx_init(void)
  {
  	int r, cpu;
- 
 +	printk(KERN_ALERT "kvm-intel.ko lixiaoliu666 and dds666 v2.0 Start,ok!!!\n");//added line lixiaoliu666 and dds666
+ 
  	if (!kvm_is_vmx_supported())
  		return -EOPNOTSUPP;
- 
 diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 951e44dc9d0e..8c22b72edfab 100644
+index 951e44dc9d0e..ced0ca3ef380 100644
 --- a/arch/x86/kvm/vmx/vmx.h
 +++ b/arch/x86/kvm/vmx/vmx.h
 @@ -529,6 +529,7 @@ static inline u8 vmx_get_rvi(void)
@@ -167,23 +159,14 @@ index 951e44dc9d0e..8c22b72edfab 100644
  #define KVM_OPTIONAL_VMX_CPU_BASED_VM_EXEC_CONTROL			\
 -	(CPU_BASED_RDTSC_EXITING |					\
 -	 CPU_BASED_TPR_SHADOW |						\
-+	(CPU_BASED_TPR_SHADOW |						\
++	 (CPU_BASED_TPR_SHADOW |						\
  	 CPU_BASED_USE_IO_BITMAPS |					\
  	 CPU_BASED_MONITOR_TRAP_FLAG |					\
  	 CPU_BASED_USE_MSR_BITMAPS |					\
 diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 9e57dd990a26..d8ca6f61b9c9 100644
+index 9e57dd990a26..5e567c10be35 100644
 --- a/arch/x86/kvm/x86.c
 +++ b/arch/x86/kvm/x86.c
-@@ -4245,7 +4245,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			offset = vcpu->arch.tsc_offset;
- 			ratio = vcpu->arch.tsc_scaling_ratio;
- 		}
--
-+		
- 		msr_info->data = kvm_scale_tsc(rdtsc(), ratio) + offset;
- 		break;
- 	}
 @@ -8928,6 +8928,14 @@ static int kvm_vcpu_do_singlestep(struct kvm_vcpu *vcpu)
  		kvm_run->exit_reason = KVM_EXIT_DEBUG;
  		return 0;
