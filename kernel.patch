@@ -20,7 +20,7 @@ index 282c91c6aa33..99eaf8c50117 100644
 +	static u64 rdtsc_prev = 0;
 +	u64 rdtsc_real = rdtsc();
 +	if(print_once){
-+		printk(KERN_ALERT "[handle_rdtsc] svm.c fake rdtsc svm function is working lixiaoliu666 and dds666\n");
++		printk(KERN_ALERT "[handle_rdtsc] svm.c fake rdtsc svm function is working diff 20 lixiaoliu666 and dds666\n");
 +		print_once = 0;
 +		rdtsc_fake = rdtsc_real;
 +	}
