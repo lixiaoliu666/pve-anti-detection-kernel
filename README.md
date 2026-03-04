@@ -7,4 +7,4 @@ modprobe: ERROR: could not insert 'kvm': Key was rejected by service 如果有�
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=lixiaoliu666/pve-anti-detection-kernel&type=Date)](https://www.star-history.com/#lixiaoliu666/pve-anti-detection-kernel&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=AICodo/pve-anti-detection-kernel&type=Date)](https://www.star-history.com/#AICodo/pve-anti-detection-kernel&Date)
